@@ -26,7 +26,9 @@ export function DashboardShell({ children, userName, role }: DashboardShellProps
 
   const handleLogout = async () => {
     setBusy(true);
-    await supabase.auth.signOut();
+    if (supabase) {
+      await supabase.auth.signOut();
+    }
     setBusy(false);
     router.push("/login");
   };

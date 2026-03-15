@@ -16,6 +16,12 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
+    if (!supabase) {
+      setError('Supabase ortam değişkenleri eksik (NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY).');
+      setLoading(false);
+      return;
+    }
+
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
 
@@ -62,6 +68,12 @@ export default function LoginPage() {
   const handleGoogleLogin = async () => {
     setLoading(true);
     setError(null);
+
+    if (!supabase) {
+      setError('Supabase ortam değişkenleri eksik (NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_ANON_KEY).');
+      setLoading(false);
+      return;
+    }
 
     const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' });
     setLoading(false);
