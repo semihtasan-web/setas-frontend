@@ -11,17 +11,17 @@ const MOCK_REPORTS = [
 export default async function DemoPage() {
   const supabase = await serverSupabase();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/login");
   }
 
   const { data: roleEntry } = await supabase
     .from("user_roles")
     .select("roles(name)")
-    .eq("user_id", session.user.id)
+    .eq("user_id", user.id)
     .maybeSingle();
 
   const roleName = (roleEntry as { roles?: { name?: string } } | null)?.roles?.name ?? "standard";
@@ -30,7 +30,7 @@ export default async function DemoPage() {
   }
 
   return (
-    <DashboardShell userName={session.user.email ?? "Demo"} role={roleName}>
+    <DashboardShell userName={user.email ?? "Demo"} role={roleName}>
       <div className="grid gap-6 lg:grid-cols-3">
         {MOCK_REPORTS.map((report) => (
           <div key={report.title} className="rounded-2xl border border-white/10 bg-white/5 p-6">

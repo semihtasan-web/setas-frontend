@@ -39,10 +39,10 @@ type OvertimeRow = {
 export default async function AdminPage() {
   const supabase = await serverSupabase();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/login");
   }
 
@@ -50,7 +50,7 @@ export default async function AdminPage() {
     supabase
       .from("user_roles")
       .select("roles(name)")
-      .eq("user_id", session.user.id)
+      .eq("user_id", user.id)
       .maybeSingle(),
   ]);
 
@@ -59,7 +59,7 @@ export default async function AdminPage() {
 
   if (!isAdmin) {
     return (
-      <DashboardShell userName={session.user.email ?? "Kullanıcı"} role={roleName}>
+      <DashboardShell userName={user.email ?? "Kullanıcı"} role={roleName}>
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-center text-white">
           <p className="text-lg font-semibold">Erişim engellendi</p>
           <p className="mt-2 text-sm text-slate-300">Bu sayfa yalnızca yönetici kullanıcılar için.</p>
@@ -89,7 +89,7 @@ export default async function AdminPage() {
   const overtimes = (overtimeRes.data ?? []) as OvertimeRow[];
 
   return (
-    <DashboardShell userName={session.user.email ?? "Yönetici"} role={roleName}>
+    <DashboardShell userName={user.email ?? "Yönetici"} role={roleName}>
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           <h2 className="text-sm uppercase tracking-[0.3em] text-slate-400">Kullanıcılar</h2>

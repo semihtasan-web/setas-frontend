@@ -12,19 +12,19 @@ type GuestMaterial = {
 export default async function ProjectGuestPage() {
   const supabase = await serverSupabase();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/login");
   }
 
-  const sessionEmail = session.user.email ?? "";
+  const sessionEmail = user.email ?? "";
 
   const { data: roleEntry } = await supabase
     .from("user_roles")
     .select("roles(name)")
-    .eq("user_id", session.user.id)
+    .eq("user_id", user.id)
     .maybeSingle();
 
   const roleName = (roleEntry as { roles?: { name?: string } } | null)?.roles?.name ?? "standard";
@@ -52,7 +52,7 @@ export default async function ProjectGuestPage() {
   const materialRows = (materials.data ?? []) as GuestMaterial[];
 
   return (
-    <DashboardShell userName={session.user.email ?? "Misafir"} role={roleName}>
+    <DashboardShell userName={user.email ?? "Misafir"} role={roleName}>
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
         <h2 className="text-sm uppercase tracking-[0.3em] text-slate-400">Şantiye Bazlı Gerçek Veriler</h2>
         {sites.length ? (

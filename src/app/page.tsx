@@ -33,14 +33,14 @@ const fetchCount = (supabase: Awaited<ReturnType<typeof serverSupabase>>, table:
 export default async function HomePage() {
   const supabase = await serverSupabase();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     redirect("/login");
   }
 
-  const sessionEmail = session.user.email ?? "";
+  const sessionEmail = user.email ?? "";
 
   const statsResponses = await Promise.all(STAT_KEYS.map((stat) => fetchCount(supabase, stat.table)));
   const stats = STAT_KEYS.map((stat, index) => ({
@@ -67,7 +67,7 @@ export default async function HomePage() {
     supabase
       .from("user_roles")
       .select("role_id, roles(name)")
-      .eq("user_id", session.user.id)
+      .eq("user_id", user.id)
       .maybeSingle(),
     supabase
       .from("user")
@@ -95,7 +95,7 @@ export default async function HomePage() {
 
   return (
     <DashboardShell
-      userName={typedUserProfile?.kullanici_adi ?? session.user.email ?? "Kullanıcı"}
+      userName={typedUserProfile?.kullanici_adi ?? user.email ?? "Kullanıcı"}
       role={roleName}
     >
       <section className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

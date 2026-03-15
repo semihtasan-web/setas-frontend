@@ -36,4 +36,6 @@ test("restricted hesabı proje misafir ekranına gider", async ({ page }) => {
   await expect(page).toHaveURL(/\/project-guest$|\/$/);
   await page.goto("/project-guest");
   await expect(page.getByText("Şantiye Bazlı Gerçek Veriler")).toBeVisible();
+  await page.goto("/admin");
+  await expect(page.getByText("Erişim engellendi")).toBeVisible();
 });
