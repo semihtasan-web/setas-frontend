@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Soru / Tartışma
+    url: https://github.com/semihtasan-web/setas-frontend/discussions
+    about: Bug veya özellik dışı sorular için Discussions kullanın.
